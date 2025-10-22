@@ -46,9 +46,9 @@ class LoginFrame(ttk.Frame):
         user = self.ent_user.get()
         pw   = self.ent_pass.get()
 
-        # Comportamento do protótipo: segue adiante se algum campo estiver vazio
-        if user.strip() == "" or pw.strip() == "":
-            self.on_login_ok(user or "anon")
+        # Correção de Login sem campo preenchido 
+        if not user.strip() or not pw.strip():
+            messagebox.showwarning("Aviso","Usuário e senha deve ser preenchidos.")
             return
 
         # Autenticação simples via repositório
