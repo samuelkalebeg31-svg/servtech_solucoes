@@ -40,26 +40,34 @@ class LoginFrame(ttk.Frame):
 
     def _do_login(self):
         """
-        Obtém usuário e senha informados, e decide a navegação para a
-        próxima tela conforme as regras atuais do protótipo.
+        Obtém usuário e senhja informados, e decide a navegação para a
+        pr´xima tela conforme as regras atuais do protótipo.
         """
         user = self.ent_user.get()
         pw   = self.ent_pass.get()
 
-        # Correção de Login sem campo preenchido 
+        # Verifica se tem campos vazios
         if not user.strip() or not pw.strip():
-            messagebox.showwarning("Aviso","Usuário e senha deve ser preenchidos.")
+            messagebox.showwarning("Aviso!", "Usuário e senha devem ser preenchidos.")
+            return
+        
+        # Autentificação
+        try:
+            ok = repository.check_login(user, pw)
+        except Exception as e:
+            messagebox.showerror("Erro de login", f"Ocorreu um erro ao verificar o login.")
             return
 
-        # Autenticação simples via repositório
-        ok = repository.check_login(user, pw)
         if ok:
-            if self.var_remember.get():
-                repository.save_remember_me(user, pw)
+            try:
+                if self.var_remember.get():
+                    repository.save_remember_me(user, pw)
+            except Exception as e:
+                messagebox.showwarning("Aviso!", f"Não foi possível salvar login: {e}")
+
             self.on_login_ok(user)
         else:
-            messagebox.showerror("Login inválido", "Usuário ou senha incorretos.")
-
+            messagebox.showerror("Login inválido", "Usuário ou senha errado")                
 # ----------------------------------
 # Tela de Ordens de Serviço
 # ----------------------------------
